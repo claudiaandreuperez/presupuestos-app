@@ -27,7 +27,7 @@ export const CATEGORIAS: readonly CategoriaInfo[] = [
   { id: Categoria.Viajes, label: 'Viatges', color: '#26a69a', icon: '✈️' },
   { id: Categoria.Restauracion, label: 'Restaurant', color: '#ff7043', icon: '🍽️' },
   { id: Categoria.Comida, label: 'Menjar', color: '#66bb6a', icon: '🛒' },
-  { id: Categoria.Cositas, label: 'Compretes', color: '#ab47bc', icon: '🎁' },
+  { id: Categoria.Cositas, label: 'Cositas', color: '#ab47bc', icon: '🎁' },
   { id: Categoria.Ropa, label: 'Roba', color: '#ec407a', icon: '👕' },
   { id: Categoria.Cosmetica, label: 'Cosmètica', color: '#f06292', icon: '💄' },
   { id: Categoria.Salud, label: 'Salut', color: '#ef5350', icon: '💊' },
