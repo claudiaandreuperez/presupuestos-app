@@ -1,0 +1,71 @@
+<section class="presupuestos" aria-labelledby="presupuestos-heading">
+  <h2 id="presupuestos-heading">Pressupostos mensuals</h2>
+
+  <app-month-picker [mes]="mes" (mesChange)="onMesChange($event)" />
+
+  <div class="presupuestos__toolbar">
+    <button
+      type="button"
+      class="presupuestos__copy"
+      (click)="copyFromPrevious()"
+      [disabled]="loading || copying || saving"
+    >
+      {{ copying ? 'Copiant…' : 'Copiar del mes anterior' }}
+    </button>
+  </div>
+
+  <div class="presupuestos__status" aria-live="polite" aria-atomic="true">
+    @if (statusMessage) {
+      <p class="presupuestos__status-message">{{ statusMessage }}</p>
+    }
+    @if (errorMessage) {
+      <p class="presupuestos__error" role="alert">{{ errorMessage }}</p>
+    }
+  </div>
+
+  @if (loading) {
+    <p class="presupuestos__loading" role="status">Carregant pressupostos…</p>
+  } @else {
+    <form class="presupuestos__form" (ngSubmit)="saveAll()" novalidate>
+      <ul class="presupuestos__list">
+        @for (item of presupuestos; track item.categoria) {
+          @let cat = getCategoriaInfo(item.categoria);
+          <li class="presupuestos__item">
+            <label class="presupuestos__label" [for]="'limite-' + item.categoria">
+              <span class="presupuestos__cat-icon" aria-hidden="true">{{ cat.icon }}</span>
+              <span class="presupuestos__cat-name">{{ cat.label }}</span>
+            </label>
+            <div class="presupuestos__input-wrap">
+              <input
+                [id]="'limite-' + item.categoria"
+                class="presupuestos__input"
+                type="number"
+                inputmode="decimal"
+                step="0.01"
+                min="0"
+                required
+                [(ngModel)]="item.limite"
+                [name]="'limite-' + item.categoria"
+                [disabled]="saving"
+                [attr.aria-describedby]="'limite-help-' + item.categoria"
+              />
+              <span class="presupuestos__currency" aria-hidden="true">€</span>
+            </div>
+            <span [id]="'limite-help-' + item.categoria" class="visually-hidden">
+              Límit mensual per a {{ cat.label }}
+            </span>
+          </li>
+        }
+      </ul>
+
+      <p class="presupuestos__total">
+        Total mensual:
+        <strong>{{ totalPresupuesto | currency:'EUR':'symbol':'1.2-2':'ca' }}</strong>
+      </p>
+
+      <button type="submit" class="presupuestos__submit" [disabled]="saving">
+        {{ saving ? 'Guardant…' : 'Guardar pressupostos' }}
+      </button>
+    </form>
+  }
+</section>

@@ -1,0 +1,73 @@
+.category-card {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: #fff;
+  border-left: 4px solid var(--cat-color, #78909c);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 8%);
+}
+
+.category-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.category-card__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.category-card__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.category-card__amounts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.category-card__amount-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.category-card__amount-value {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.category-card__remaining--over .category-card__amount-value {
+  color: #c62828;
+}
+
+.category-card__progress {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #e8e8e8;
+  overflow: hidden;
+}
+
+.category-card__progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.category-card__progress-bar[data-state='ok'] {
+  background: #2e7d32;
+}
+
+.category-card__progress-bar[data-state='warning'] {
+  background: #f9a825;
+}
+
+.category-card__progress-bar[data-state='danger'] {
+  background: #c62828;
+}

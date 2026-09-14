@@ -1,0 +1,137 @@
+<section class="historial" aria-labelledby="historial-heading">
+  <h2 id="historial-heading">Historial de despeses</h2>
+
+  <app-month-picker [mes]="mes" (mesChange)="onMesChange($event)" />
+
+  <div class="historial__status" aria-live="polite" aria-atomic="true">
+    @if (statusMessage) {
+      <p class="historial__status-message">{{ statusMessage }}</p>
+    }
+  </div>
+
+  <div class="historial__filters" role="group" aria-label="Filtrar per categoria">
+    <button
+      type="button"
+      class="historial__filter"
+      [class.historial__filter--active]="filtroCategoria === 'TOTES'"
+      [attr.aria-pressed]="filtroCategoria === 'TOTES'"
+      (click)="onFiltroChange('TOTES')"
+    >
+      Totes
+    </button>
+    @for (cat of categorias; track cat.id) {
+      <button
+        type="button"
+        class="historial__filter"
+        [class.historial__filter--active]="filtroCategoria === cat.id"
+        [attr.aria-pressed]="filtroCategoria === cat.id"
+        [style.--cat-color]="cat.color"
+        (click)="onFiltroChange(cat.id)"
+      >
+        <span aria-hidden="true">{{ cat.icon }}</span>
+        {{ cat.label }}
+      </button>
+    }
+  </div>
+
+  @if (loading) {
+    <p class="historial__loading" role="status">Carregant despeses…</p>
+  } @else if (gastosFiltrados.length === 0) {
+    <p class="historial__empty" role="status">
+      @if (filtroCategoria === 'TOTES') {
+        No hi ha despeses registrades aquest mes.
+      } @else {
+        No hi ha despeses a la categoria {{ getCategoriaInfo(filtroCategoria).label }}.
+      }
+    </p>
+  } @else {
+    <ul class="historial__list">
+      @for (gasto of gastosFiltrados; track gasto.id) {
+        <li class="historial__item">
+          <article class="historial__card" [attr.aria-label]="getCategoriaInfo(gasto.categoria).label + ', ' + (gasto.importe | currency:'EUR':'symbol':'1.2-2':'ca')">
+            <div class="historial__card-main">
+              <span class="historial__icon" aria-hidden="true">{{ getCategoriaInfo(gasto.categoria).icon }}</span>
+              <div class="historial__details">
+                <p class="historial__category">{{ getCategoriaInfo(gasto.categoria).label }}</p>
+                <p class="historial__meta">
+                  <time [attr.datetime]="gasto.fecha">{{ formatFechaLabel(gasto.fecha) }}</time>
+                  @if (gasto.nota) {
+                    <span class="historial__note"> · {{ gasto.nota }}</span>
+                  }
+                </p>
+              </div>
+              <p class="historial__amount">{{ gasto.importe | currency:'EUR':'symbol':'1.2-2':'ca' }}</p>
+            </div>
+
+            <div class="historial__actions">
+              <button
+                type="button"
+                class="historial__action historial__action--edit"
+                (click)="openEditDialog(gasto, $event)"
+                [attr.aria-label]="'Editar despesa de ' + getCategoriaInfo(gasto.categoria).label"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                class="historial__action historial__action--delete"
+                (click)="openDeleteDialog(gasto, $event)"
+                [attr.aria-label]="'Eliminar despesa de ' + getCategoriaInfo(gasto.categoria).label"
+              >
+                Eliminar
+              </button>
+            </div>
+          </article>
+        </li>
+      }
+    </ul>
+  }
+</section>
+
+<dialog
+  #editDialog
+  class="historial__dialog"
+  (close)="statusMessage = ''"
+  (keydown)="onEditDialogKeydown($event)"
+  (cancel)="closeEditDialog()"
+  aria-labelledby="edit-dialog-title"
+>
+  <header class="historial__dialog-header">
+    <h2 id="edit-dialog-title">Editar despesa</h2>
+    <button type="button" class="historial__dialog-close" (click)="closeEditDialog()" aria-label="Tancar">
+      ✕
+    </button>
+  </header>
+
+  @if (editingGasto) {
+    <app-expense-form [mes]="mes" [gasto]="editingGasto" (saved)="onExpenseUpdated()" />
+  }
+</dialog>
+
+<dialog
+  #deleteDialog
+  class="historial__dialog historial__dialog--confirm"
+  (keydown)="onDeleteDialogKeydown($event)"
+  (cancel)="closeDeleteDialog()"
+  aria-labelledby="delete-dialog-title"
+>
+  <div class="historial__confirm">
+    <h2 id="delete-dialog-title">Eliminar despesa?</h2>
+    @if (deletingGasto) {
+      <p>
+        S'eliminarà la despesa de
+        <strong>{{ getCategoriaInfo(deletingGasto.categoria).label }}</strong>
+        ({{ deletingGasto.importe | currency:'EUR':'symbol':'1.2-2':'ca' }})
+        del {{ formatFechaLabel(deletingGasto.fecha) }}.
+      </p>
+    }
+    <div class="historial__confirm-actions">
+      <button type="button" class="historial__confirm-cancel" (click)="closeDeleteDialog()" [disabled]="deleting">
+        Cancel·lar
+      </button>
+      <button type="button" class="historial__confirm-delete" (click)="confirmDelete()" [disabled]="deleting">
+        {{ deleting ? 'Eliminant…' : 'Eliminar' }}
+      </button>
+    </div>
+  </div>
+</dialog>

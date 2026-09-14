@@ -1,0 +1,38 @@
+<article class="category-card" [attr.data-state]="progressState">
+  <header class="category-card__header">
+    <span class="category-card__icon" aria-hidden="true">{{ info.icon }}</span>
+    <h3 class="category-card__title">{{ info.label }}</h3>
+  </header>
+
+  <div class="category-card__amounts">
+    <p class="category-card__spent">
+      <span class="category-card__amount-label">Gastat</span>
+      <span class="category-card__amount-value">{{ resumen.gastado | currency: 'EUR' : 'symbol' : '1.2-2' : 'ca' }}</span>
+    </p>
+    <p class="category-card__budget">
+      <span class="category-card__amount-label">Pressupost</span>
+      <span class="category-card__amount-value">{{ resumen.limite | currency: 'EUR' : 'symbol' : '1.2-2' : 'ca' }}</span>
+    </p>
+    <p class="category-card__remaining" [class.category-card__remaining--over]="resumen.restante < 0">
+      <span class="category-card__amount-label">Restant</span>
+      <span class="category-card__amount-value">{{ resumen.restante | currency: 'EUR' : 'symbol' : '1.2-2' : 'ca' }}</span>
+    </p>
+  </div>
+
+  @if (resumen.limite > 0) {
+    <div
+      class="category-card__progress"
+      role="progressbar"
+      [attr.aria-valuenow]="resumen.porcentaje"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-label]="progressLabel"
+    >
+      <div
+        class="category-card__progress-bar"
+        [style.width.%]="resumen.porcentaje"
+        [attr.data-state]="progressState"
+      ></div>
+    </div>
+  }
+</article>

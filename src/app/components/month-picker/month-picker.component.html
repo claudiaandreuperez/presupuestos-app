@@ -1,0 +1,24 @@
+<nav class="month-picker" aria-label="Selecció de mes">
+  <button type="button" class="month-picker__nav" (click)="mesAnterior()" aria-label="Mes anterior">
+    ‹
+  </button>
+
+  <div class="month-picker__current" aria-live="polite" aria-atomic="true">
+    <span class="month-picker__label" id="mes-seleccionat">{{ mesLabel }}</span>
+    @if (!isMesActual) {
+      <button type="button" class="month-picker__today" (click)="irMesActual()">
+        Tornar al mes actual
+      </button>
+    }
+  </div>
+
+  <button
+    type="button"
+    class="month-picker__nav"
+    (click)="mesSiguiente()"
+    [disabled]="isMesActual"
+    aria-label="Mes següent"
+  >
+    ›
+  </button>
+</nav>

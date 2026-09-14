@@ -1,0 +1,54 @@
+<section class="dashboard" aria-labelledby="dashboard-heading">
+  <h2 id="dashboard-heading" class="visually-hidden">Resum mensual per categories</h2>
+
+  <app-month-picker [mes]="mes" (mesChange)="onMesChange($event)" />
+
+  <div class="dashboard__status" aria-live="polite" aria-atomic="true">
+    @if (statusMessage) {
+      <p class="dashboard__status-message">{{ statusMessage }}</p>
+    }
+  </div>
+
+  @if (loading) {
+    <p class="dashboard__loading" role="status">Carregant resum…</p>
+  } @else {
+    <ul class="dashboard__cards">
+      @for (resumen of resumens; track resumen.categoria) {
+        <li>
+          <app-category-card
+            [resumen]="resumen"
+            [style.--cat-color]="getCategoriaColor(resumen)"
+          />
+        </li>
+      }
+    </ul>
+  }
+</section>
+
+<button
+  #fabButton
+  type="button"
+  class="dashboard__fab"
+  (click)="openAddDialog()"
+  aria-haspopup="dialog"
+>
+  + Despesa
+</button>
+
+<dialog
+  #addDialog
+  class="dashboard__dialog"
+  (close)="statusMessage = ''"
+  (keydown)="onDialogKeydown($event)"
+  (cancel)="closeAddDialog()"
+  aria-labelledby="add-dialog-title"
+>
+  <header class="dashboard__dialog-header">
+    <h2 id="add-dialog-title">Afegir despesa</h2>
+    <button type="button" class="dashboard__dialog-close" (click)="closeAddDialog()" aria-label="Tancar">
+      ✕
+    </button>
+  </header>
+
+  <app-expense-form [mes]="mes" (saved)="onExpenseSaved()" />
+</dialog>

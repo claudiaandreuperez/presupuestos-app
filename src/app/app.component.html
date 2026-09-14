@@ -1,0 +1,74 @@
+<a class="skip-link" href="#main-content">Salta al contingut</a>
+
+@if (!networkStatus.isOnline()) {
+  <div class="app-offline-banner" role="status" aria-live="polite">
+    Sense connexió. Pots continuar consultant i editant les dades guardades al dispositiu.
+  </div>
+}
+
+@if (updateAvailable) {
+  <div class="app-update-banner" role="status" aria-live="polite">
+    <p class="app-update-banner__text">Hi ha una versió nova de l'app.</p>
+    <button type="button" class="app-update-banner__action" (click)="applyUpdate()">
+      Actualitzar
+    </button>
+  </div>
+}
+
+@if (pwaInstall.showInstallBanner()) {
+  <aside class="app-install-banner" aria-labelledby="install-heading">
+    <div class="app-install-banner__content">
+      <h2 id="install-heading" class="app-install-banner__title">Instal·la l'app</h2>
+      @if (pwaInstall.installMode() === 'native') {
+        <p class="app-install-banner__text">
+          Afegeix Pressupostos a la pantalla d'inici per obrir-la com una app i treballar offline.
+        </p>
+      } @else {
+        <p class="app-install-banner__text">
+          A Safari, toca <strong>Compartir</strong> i després <strong>Afegeix a la pantalla d'inici</strong>
+          per instal·lar l'app i treballar offline.
+        </p>
+      }
+    </div>
+    <div class="app-install-banner__actions">
+      @if (pwaInstall.installMode() === 'native') {
+        <button type="button" class="app-install-banner__install" (click)="installApp()">
+          Instal·lar
+        </button>
+      }
+      <button type="button" class="app-install-banner__dismiss" (click)="dismissInstall()">
+        {{ pwaInstall.installMode() === 'native' ? 'Ara no' : 'Entesos' }}
+      </button>
+    </div>
+  </aside>
+}
+
+<header class="app-header">
+  <h1>Pressupostos</h1>
+  <nav class="app-nav" aria-label="Navegació principal">
+    <a
+      routerLink="/"
+      routerLinkActive="app-nav__link--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      ariaCurrentWhenActive="page"
+    >
+      Inici
+    </a>
+    <a routerLink="/historial" routerLinkActive="app-nav__link--active" ariaCurrentWhenActive="page">
+      Historial
+    </a>
+    <a routerLink="/presupuestos" routerLinkActive="app-nav__link--active" ariaCurrentWhenActive="page">
+      Pressupostos
+    </a>
+    <a routerLink="/graficos" routerLinkActive="app-nav__link--active" ariaCurrentWhenActive="page">
+      Gràfics
+    </a>
+    <a routerLink="/exportar" routerLinkActive="app-nav__link--active" ariaCurrentWhenActive="page">
+      Exportar
+    </a>
+  </nav>
+</header>
+
+<main id="main-content" class="app-main">
+  <router-outlet />
+</main>

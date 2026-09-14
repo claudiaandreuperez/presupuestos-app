@@ -1,0 +1,81 @@
+<form class="expense-form" (ngSubmit)="onSubmit()" novalidate>
+  <div class="expense-form__field">
+    <label class="expense-form__label" for="importe">Import</label>
+    <div class="expense-form__amount-wrap">
+      <input
+        id="importe"
+        name="importe"
+        class="expense-form__amount"
+        type="number"
+        inputmode="decimal"
+        step="0.01"
+        min="0.01"
+        required
+        [(ngModel)]="importe"
+        placeholder="0,00"
+        [attr.aria-describedby]="errorMessage ? 'importe-help importe-error' : 'importe-help'"
+        [attr.aria-invalid]="errorMessage ? 'true' : null"
+        [disabled]="saving"
+      />
+      <span class="expense-form__currency" aria-hidden="true">€</span>
+    </div>
+    <p id="importe-help" class="expense-form__help">Introdueix l'import en euros</p>
+  </div>
+
+  <fieldset class="expense-form__categories">
+    <legend class="expense-form__label">Categoria</legend>
+    <div class="expense-form__category-grid" role="group" aria-label="Selecciona una categoria">
+      @for (cat of categorias; track cat.id) {
+        <button
+          type="button"
+          class="expense-form__category"
+          [class.expense-form__category--selected]="categoria === cat.id"
+          [attr.aria-pressed]="categoria === cat.id"
+          [style.--cat-color]="cat.color"
+          (click)="selectCategoria(cat.id)"
+          [disabled]="saving"
+        >
+          <span class="expense-form__category-icon" aria-hidden="true">{{ cat.icon }}</span>
+          <span class="expense-form__category-label">{{ cat.label }}</span>
+        </button>
+      }
+    </div>
+  </fieldset>
+
+  @if (isEditing) {
+    <div class="expense-form__field">
+      <label class="expense-form__label" for="fecha">Data</label>
+      <input
+        id="fecha"
+        name="fecha"
+        class="expense-form__input"
+        type="date"
+        [(ngModel)]="fecha"
+        required
+        [disabled]="saving"
+      />
+    </div>
+  }
+
+  <div class="expense-form__field">
+    <label class="expense-form__label" for="nota">Nota <span class="expense-form__optional">(opcional)</span></label>
+    <input
+      id="nota"
+      name="nota"
+      class="expense-form__input"
+      type="text"
+      [(ngModel)]="nota"
+      maxlength="200"
+      autocomplete="off"
+      [disabled]="saving"
+    />
+  </div>
+
+  @if (errorMessage) {
+    <p id="importe-error" class="expense-form__error" role="alert">{{ errorMessage }}</p>
+  }
+
+  <button type="submit" class="expense-form__submit" [disabled]="saving">
+    {{ saving ? 'Guardant…' : (isEditing ? 'Actualitzar despesa' : 'Guardar despesa') }}
+  </button>
+</form>

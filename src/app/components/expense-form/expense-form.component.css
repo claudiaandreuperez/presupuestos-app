@@ -1,0 +1,141 @@
+.expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.expense-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.expense-form__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.expense-form__optional {
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.expense-form__amount-wrap {
+  position: relative;
+}
+
+.expense-form__amount {
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 2px solid #ccc;
+  border-radius: 0.75rem;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.expense-form__amount:focus-visible {
+  border-color: #1a5f3c;
+  outline: none;
+}
+
+.expense-form__currency {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  color: #666;
+}
+
+.expense-form__help {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.expense-form__categories {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.expense-form__category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.expense-form__category {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-height: 3.75rem;
+  padding: 0.5rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 0.75rem;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.expense-form__category--selected {
+  border-color: var(--cat-color, #1a5f3c);
+  background: color-mix(in srgb, var(--cat-color, #1a5f3c) 8%, #fff);
+}
+
+.expense-form__category-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.expense-form__category-label {
+  text-align: center;
+  line-height: 1.2;
+}
+
+.expense-form__input {
+  min-height: 2.75rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+.expense-form__input:focus-visible {
+  border-color: #1a5f3c;
+  outline: none;
+}
+
+.expense-form__error {
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: #fdecea;
+  color: #b71c1c;
+  font-size: 0.875rem;
+}
+
+.expense-form__submit {
+  min-height: 3rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: #1a5f3c;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.expense-form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.expense-form__submit:focus-visible {
+  outline: 2px solid #1a5f3c;
+  outline-offset: 2px;
+}

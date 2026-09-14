@@ -1,0 +1,217 @@
+<section class="export" aria-labelledby="export-heading">
+  <h2 id="export-heading">Exportar i sincronitzar</h2>
+  <p class="export__intro">
+    Exporta les teves dades per a Numbers, iCloud o una còpia de seguretat completa.
+  </p>
+
+  <div class="export__status" aria-live="polite" aria-atomic="true">
+    @if (statusMessage) {
+      <p class="export__status-message">{{ statusMessage }}</p>
+    }
+    @if (errorMessage) {
+      <p class="export__error" role="alert">{{ errorMessage }}</p>
+    }
+  </div>
+
+  <section class="export__section" aria-labelledby="csv-detalle-heading">
+    <h3 id="csv-detalle-heading">CSV detall de gastos</h3>
+    <p class="export__hint">
+      Una fila per gast: <code>fecha,categoria,importe,nota,mes</code>. Ideal per al drecera d'iCloud.
+    </p>
+
+    <fieldset class="export__scope">
+      <legend class="export__scope-legend">Abast de l'exportació</legend>
+      <div class="export__scope-options">
+        <label class="export__scope-option">
+          <input
+            type="radio"
+            name="detalle-scope"
+            value="all"
+            [checked]="detalleScope === 'all'"
+            (change)="onDetalleScopeChange('all')"
+            [disabled]="isAnyBusy()"
+          />
+          Tots els mesos
+        </label>
+        <label class="export__scope-option">
+          <input
+            type="radio"
+            name="detalle-scope"
+            value="month"
+            [checked]="detalleScope === 'month'"
+            (change)="onDetalleScopeChange('month')"
+            [disabled]="isAnyBusy()"
+          />
+          Només el mes seleccionat
+        </label>
+      </div>
+    </fieldset>
+
+    @if (detalleScope === 'month') {
+      <app-month-picker [mes]="mes" (mesChange)="onMesChange($event)" />
+    }
+
+    <div class="export__actions">
+      <button
+        type="button"
+        class="export__btn export__btn--primary"
+        (click)="downloadDetalle()"
+        [disabled]="isAnyBusy()"
+      >
+        {{ isBusy('detalle-download') ? 'Exportant…' : 'Descarregar CSV' }}
+      </button>
+      @if (canShare) {
+        <button
+          type="button"
+          class="export__btn export__btn--secondary"
+          (click)="shareDetalle()"
+          [disabled]="isAnyBusy()"
+        >
+          {{ isBusy('detalle-share') ? 'Compartint…' : 'Compartir (Share Sheet)' }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <section class="export__section" aria-labelledby="csv-resumen-heading">
+    <h3 id="csv-resumen-heading">CSV resum mensual</h3>
+    <p class="export__hint">
+      Taula categoria × mes amb totals. Compatible amb la teva fulla de Numbers històrica.
+    </p>
+
+    <div class="export__actions">
+      <button
+        type="button"
+        class="export__btn export__btn--primary"
+        (click)="downloadResumen()"
+        [disabled]="isAnyBusy()"
+      >
+        {{ isBusy('resumen-download') ? 'Exportant…' : 'Descarregar resum' }}
+      </button>
+      @if (canShare) {
+        <button
+          type="button"
+          class="export__btn export__btn--secondary"
+          (click)="shareResumen()"
+          [disabled]="isAnyBusy()"
+        >
+          {{ isBusy('resumen-share') ? 'Compartint…' : 'Compartir resum' }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <section class="export__section" aria-labelledby="backup-heading">
+    <h3 id="backup-heading">Còpia de seguretat JSON</h3>
+    <p class="export__hint">
+      Backup complet de gastos i pressupostos. Guarda'l periòdicament per si canvies de mòbil.
+    </p>
+
+    <div class="export__actions">
+      <button
+        type="button"
+        class="export__btn export__btn--primary"
+        (click)="downloadBackup()"
+        [disabled]="isAnyBusy()"
+      >
+        {{ isBusy('backup-download') ? 'Exportant…' : 'Descarregar backup' }}
+      </button>
+      @if (canShare) {
+        <button
+          type="button"
+          class="export__btn export__btn--secondary"
+          (click)="shareBackup()"
+          [disabled]="isAnyBusy()"
+        >
+          {{ isBusy('backup-share') ? 'Compartint…' : 'Compartir backup' }}
+        </button>
+      }
+    </div>
+
+    <div class="export__import">
+      <label class="export__import-label" for="backup-import">
+        Restaurar des d'un fitxer JSON
+      </label>
+      <input
+        id="backup-import"
+        class="export__import-input"
+        type="file"
+        accept="application/json,.json"
+        (change)="onImportFile($event)"
+        [disabled]="isAnyBusy()"
+      />
+      <p class="export__warning" role="note">
+        La importació substitueix totes les dades locals. Exporta un backup abans si en tens dubtes.
+      </p>
+    </div>
+  </section>
+
+  <section class="export__section export__section--guide" aria-labelledby="shortcut-heading">
+    <div class="export__guide-header">
+      <h3 id="shortcut-heading">Connectar amb Numbers (iCloud)</h3>
+      <button
+        type="button"
+        class="export__toggle"
+        (click)="toggleShortcutGuide()"
+        [attr.aria-expanded]="showShortcutGuide"
+        aria-controls="shortcut-guide"
+      >
+        {{ showShortcutGuide ? 'Amagar guia' : 'Mostrar guia' }}
+      </button>
+    </div>
+
+    @if (showShortcutGuide) {
+      <div id="shortcut-guide" class="export__guide">
+        <p>
+          Apple no permet escriure directament en fitxers <code>.numbers</code> des d'una PWA.
+          El flux recomanat és un CSV companion a iCloud + un drecera (Shortcut).
+        </p>
+
+        <ol class="export__steps">
+          <li>
+            A l'iPhone, obre <strong>Fitxers</strong> i crea la carpeta
+            <code>PresupuestosApp</code> a iCloud Drive.
+          </li>
+          <li>
+            Crea <code>gastos.csv</code> amb aquesta capçalera (una sola línia):
+            <pre class="export__code">fecha,categoria,importe,nota,mes</pre>
+          </li>
+          <li>
+            Obre l'app <strong>Dreceres</strong> → <strong>Nova drecera</strong> →
+            <strong>Configuració de la drecera</strong> → activa
+            <strong>Mostra a full de compartició</strong>.
+          </li>
+          <li>
+            Afegeix accions en aquest ordre:
+            <ul>
+              <li><strong>Rep</strong> → tipus <em>Text</em> (des del full de compartició).</li>
+              <li><strong>Obtenir contingut del portapapers</strong> (opcional, si copies manualment).</li>
+              <li>
+                <strong>Obtenir contingut del fitxer</strong> →
+                <code>iCloud Drive/PresupuestosApp/gastos.csv</code>.
+              </li>
+              <li><strong>Combinar text</strong> → uneix el fitxer existent + una línia nova + el text rebut.</li>
+              <li>
+                <strong>Guardar fitxer</strong> → sobreescriu
+                <code>gastos.csv</code> a la mateixa carpeta.
+              </li>
+            </ul>
+          </li>
+          <li>
+            Des d'aquesta app, exporta o comparteix el CSV de detall del mes i tria la teva drecera
+            al full de compartició d'iOS.
+          </li>
+          <li>
+            A Numbers, importa o enllaça <code>gastos.csv</code> i usa les teves fórmules
+            (SUMIFS, taules dinàmiques) per pivotar per mesos.
+          </li>
+        </ol>
+
+        <p class="export__tip">
+          <strong>Consell:</strong> exporta el resum mensual al tancar cada mes per actualitzar la
+          taula històrica sense reestructurar el teu Numbers.
+        </p>
+      </div>
+    }
+  </section>
+</section>

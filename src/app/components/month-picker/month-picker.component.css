@@ -1,0 +1,51 @@
+.month-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.month-picker__nav {
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.month-picker__nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.month-picker__current {
+  flex: 1;
+  text-align: center;
+}
+
+.month-picker__label {
+  display: block;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.month-picker__today {
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  background: none;
+  color: #1a5f3c;
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.month-picker__today:focus-visible {
+  outline: 2px solid #1a5f3c;
+  outline-offset: 2px;
+}

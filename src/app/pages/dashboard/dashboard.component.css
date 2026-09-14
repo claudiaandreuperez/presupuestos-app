@@ -1,0 +1,93 @@
+.dashboard {
+  padding-bottom: 5rem;
+}
+
+.dashboard__loading {
+  margin: 2rem 0;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.dashboard__status-message {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: #e8f5e9;
+  color: #1b5e20;
+  font-size: 0.875rem;
+}
+
+.dashboard__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dashboard__fab {
+  position: fixed;
+  right: calc(1.25rem + var(--safe-right));
+  bottom: calc(1.25rem + var(--safe-bottom));
+  z-index: 10;
+  min-height: 3rem;
+  padding: 0 1.25rem;
+  border: none;
+  border-radius: 999px;
+  background: #1a5f3c;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+  cursor: pointer;
+}
+
+.dashboard__fab:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.dashboard__dialog {
+  width: min(100% - 2rem, 28rem);
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: 0;
+  border: none;
+  border-radius: 1rem;
+  overflow: auto;
+}
+
+.dashboard__dialog::backdrop {
+  background: rgb(0 0 0 / 45%);
+}
+
+.dashboard__dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.dashboard__dialog-header h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.dashboard__dialog-close {
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.dashboard__dialog app-expense-form {
+  display: block;
+  padding: 1.25rem;
+}

@@ -1,0 +1,91 @@
+<section class="graficos" aria-labelledby="graficos-heading">
+  <h2 id="graficos-heading">Gràfics</h2>
+
+  <app-month-picker [mes]="mes" (mesChange)="onMesChange($event)" />
+
+  <article class="graficos__card" aria-labelledby="comparativa-heading">
+    <h3 id="comparativa-heading">Despeses vs pressupost</h3>
+    <p class="graficos__description">
+      Comparació per categoria del mes seleccionat.
+    </p>
+
+    @if (loadingComparativa) {
+      <p class="graficos__loading" role="status">Carregant comparativa…</p>
+    } @else if (resumensActius.length === 0) {
+      <p class="graficos__empty">No hi ha dades per mostrar en aquest mes.</p>
+    } @else {
+      <figure class="graficos__figure">
+        <div class="graficos__canvas-wrap graficos__canvas-wrap--comparativa">
+          <canvas
+            baseChart
+            [type]="'bar'"
+            [data]="comparativaData"
+            [options]="comparativaOptions"
+            role="img"
+            [attr.aria-label]="'Gràfic de barres: despeses i pressupost per categoria del mes seleccionat'"
+          ></canvas>
+        </div>
+        <figcaption class="visually-hidden">
+          @for (resumen of resumensActius; track resumen.categoria) {
+            <span>
+              {{ getCategoriaInfo(resumen.categoria).label }}:
+              despeses {{ resumen.gastado | currency: 'EUR' : 'symbol' : '1.2-2' : 'ca' }},
+              pressupost {{ resumen.limite | currency: 'EUR' : 'symbol' : '1.2-2' : 'ca' }}.
+            </span>
+          }
+        </figcaption>
+      </figure>
+    }
+  </article>
+
+  <article class="graficos__card" aria-labelledby="evolucio-heading">
+    <h3 id="evolucio-heading">Evolució per categoria</h3>
+    <p class="graficos__description">
+      Despeses i pressupost dels darrers 6 mesos.
+    </p>
+
+    <div class="graficos__field">
+      <label for="categoria-evolucio">Categoria</label>
+      <select
+        id="categoria-evolucio"
+        name="categoria-evolucio"
+        [ngModel]="categoriaEvolucio"
+        (ngModelChange)="onCategoriaChange($event)"
+      >
+        @for (categoria of categorias; track categoria.id) {
+          <option [ngValue]="categoria.id">{{ categoria.label }}</option>
+        }
+      </select>
+    </div>
+
+    @if (loadingEvolucio) {
+      <p class="graficos__loading" role="status">Carregant evolució…</p>
+    } @else if (evolucioBuida) {
+      <p class="graficos__empty">
+        No hi ha dades per a {{ categoriaEvolucioLabel }} en els darrers 6 mesos.
+      </p>
+    } @else {
+      <figure class="graficos__figure">
+        <div class="graficos__canvas-wrap graficos__canvas-wrap--evolucio">
+          <canvas
+            baseChart
+            [type]="'line'"
+            [data]="evolucioData"
+            [options]="evolucioOptions"
+            role="img"
+            [attr.aria-label]="'Gràfic de línies: evolució de despeses i pressupost de ' + categoriaEvolucioLabel"
+          ></canvas>
+        </div>
+        <figcaption class="visually-hidden">
+          @for (item of evolucio; track item.mes) {
+            <span>
+              {{ item.mes }}:
+              despeses {{ item.gastado | currency: 'EUR' : 'symbol' : '1.2-2' : 'ca' }},
+              pressupost {{ item.limite | currency: 'EUR' : 'symbol' : '1.2-2' : 'ca' }}.
+            </span>
+          }
+        </figcaption>
+      </figure>
+    }
+  </article>
+</section>
